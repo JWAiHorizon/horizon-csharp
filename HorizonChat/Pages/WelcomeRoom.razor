@@ -1,5 +1,8 @@
 @page "/"
 @layout EmptyLayout
+@using HorizonChat.Services
+@inject UsernameService UsernameService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Welcome - Horizon Chat</PageTitle>
 
@@ -50,6 +53,20 @@
     private string username = string.Empty;
     private string validationMessage = string.Empty;
     private bool isProcessing = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Load existing username if available
+            var existingUsername = await UsernameService.GetUsernameAsync();
+            if (!string.IsNullOrWhiteSpace(existingUsername))
+            {
+                username = existingUsername;
+                StateHasChanged();
+            }
+        }
+    }
 
     private string GetInputClass()
     {
@@ -113,16 +130,28 @@
             }
             else if (!IsValidUsername(finalUsername))
             {
+                isProcessing = false;
                 return; // Don't proceed if invalid
             }
 
-            // TODO: Store username in state management service (Task 2)
-            // For now, we'll just navigate (will be implemented in next tasks)
+            // Store username in local storage
+            Console.WriteLine($"Storing username: {finalUsername}");
+            await UsernameService.SetUsernameAsync(finalUsername);
+            Console.WriteLine("Username stored successfully");
+            
+            // Verify it was stored
+            var stored = await UsernameService.GetUsernameAsync();
+            Console.WriteLine($"Retrieved username: {stored}");
             
             await Task.Delay(300); // Small delay for UX
             
             // TODO: Navigate to chat room (Task 5)
             // NavigationManager.NavigateTo("/chat");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in EnterChat: {ex.Message}");
+            validationMessage = "An error occurred. Please try again.";
         }
         finally
         {
