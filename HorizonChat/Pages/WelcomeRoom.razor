@@ -1,0 +1,139 @@
+@page "/"
+@layout EmptyLayout
+
+<PageTitle>Welcome - Horizon Chat</PageTitle>
+
+<div class="welcome-container">
+    <div class="welcome-card">
+        <div class="welcome-header">
+            <h1>🌅 Welcome to Horizon Chat</h1>
+            <p class="welcome-subtitle">Choose your username to get started</p>
+        </div>
+
+        <div class="welcome-form">
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    class="form-control @GetInputClass()" 
+                    placeholder="Enter your username..." 
+                    @bind="username"
+                    @bind:event="oninput"
+                    maxlength="20"
+                    @onkeypress="HandleKeyPress" />
+                @if (!string.IsNullOrWhiteSpace(validationMessage))
+                {
+                    <div class="validation-message">@validationMessage</div>
+                }
+                <small class="form-text">Or leave empty to use a guest name</small>
+            </div>
+
+            <button 
+                class="btn btn-primary btn-lg btn-enter" 
+                @onclick="EnterChat"
+                disabled="@isProcessing">
+                @if (isProcessing)
+                {
+                    <span>Entering...</span>
+                }
+                else
+                {
+                    <span>Enter Chat Room →</span>
+                }
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string username = string.Empty;
+    private string validationMessage = string.Empty;
+    private bool isProcessing = false;
+
+    private string GetInputClass()
+    {
+        if (string.IsNullOrWhiteSpace(username))
+            return string.Empty;
+        
+        return IsValidUsername(username) ? "valid" : "invalid";
+    }
+
+    private bool IsValidUsername(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return true; // Empty is valid (will use guest name)
+        
+        if (name.Length < 2)
+        {
+            validationMessage = "Username must be at least 2 characters";
+            return false;
+        }
+
+        if (name.Length > 20)
+        {
+            validationMessage = "Username must be 20 characters or less";
+            return false;
+        }
+
+        // Check for valid characters (letters, numbers, spaces, hyphens, underscores)
+        if (!System.Text.RegularExpressions.Regex.IsMatch(name, @"^[a-zA-Z0-9\s_-]+$"))
+        {
+            validationMessage = "Username can only contain letters, numbers, spaces, hyphens, and underscores";
+            return false;
+        }
+
+        validationMessage = string.Empty;
+        return true;
+    }
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            await EnterChat();
+        }
+    }
+
+    private async Task EnterChat()
+    {
+        if (isProcessing)
+            return;
+
+        isProcessing = true;
+
+        try
+        {
+            string finalUsername = username.Trim();
+
+            // Generate guest name if no username provided
+            if (string.IsNullOrWhiteSpace(finalUsername))
+            {
+                finalUsername = GenerateGuestName();
+            }
+            else if (!IsValidUsername(finalUsername))
+            {
+                return; // Don't proceed if invalid
+            }
+
+            // TODO: Store username in state management service (Task 2)
+            // For now, we'll just navigate (will be implemented in next tasks)
+            
+            await Task.Delay(300); // Small delay for UX
+            
+            // TODO: Navigate to chat room (Task 5)
+            // NavigationManager.NavigateTo("/chat");
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private string GenerateGuestName()
+    {
+        var random = new Random();
+        var guestNumber = random.Next(1000, 9999);
+        return $"Guest{guestNumber}";
+    }
+}

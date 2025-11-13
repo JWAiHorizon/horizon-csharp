@@ -62,3 +62,134 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+/* Welcome Room Styles */
+.welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.welcome-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    padding: 48px;
+    max-width: 500px;
+    width: 100%;
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.welcome-header {
+    text-align: center;
+    margin-bottom: 36px;
+}
+
+.welcome-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+    color: #666;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.welcome-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    padding: 12px 16px;
+    font-size: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control.valid {
+    border-color: #26b050;
+}
+
+.form-control.invalid {
+    border-color: #dc3545;
+}
+
+.form-text {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.btn-enter {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.btn-enter:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-enter:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-enter:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 576px) {
+    .welcome-card {
+        padding: 32px 24px;
+    }
+
+    .welcome-header h1 {
+        font-size: 1.5rem;
+    }
+}
