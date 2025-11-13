@@ -2,6 +2,7 @@
 @layout EmptyLayout
 @using HorizonChat.Services
 @inject UsernameService UsernameService
+@inject GuestNameGenerator GuestNameGenerator
 @inject NavigationManager NavigationManager
 
 <PageTitle>Welcome - Horizon Chat</PageTitle>
@@ -29,7 +30,17 @@
                 {
                     <div class="validation-message">@validationMessage</div>
                 }
-                <small class="form-text">Or leave empty to use a guest name</small>
+                @if (string.IsNullOrWhiteSpace(username))
+                {
+                    <small class="form-text guest-preview">
+                        💡 Leave empty to get a guest name like: <strong>@previewGuestName</strong>
+                        <button type="button" class="btn-link-small" @onclick="RefreshGuestPreview">🔄</button>
+                    </small>
+                }
+                else
+                {
+                    <small class="form-text">Or leave empty to use a guest name</small>
+                }
             </div>
 
             <button 
@@ -53,6 +64,7 @@
     private string username = string.Empty;
     private string validationMessage = string.Empty;
     private bool isProcessing = false;
+    private string previewGuestName = string.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -63,9 +75,20 @@
             if (!string.IsNullOrWhiteSpace(existingUsername))
             {
                 username = existingUsername;
-                StateHasChanged();
             }
+            else
+            {
+                // Generate preview guest name
+                previewGuestName = GuestNameGenerator.GenerateUniqueName();
+            }
+            StateHasChanged();
         }
+    }
+
+    private void RefreshGuestPreview()
+    {
+        previewGuestName = GuestNameGenerator.GenerateUniqueName();
+        StateHasChanged();
     }
 
     private string GetInputClass()
@@ -161,8 +184,6 @@
 
     private string GenerateGuestName()
     {
-        var random = new Random();
-        var guestNumber = random.Next(1000, 9999);
-        return $"Guest{guestNumber}";
+        return GuestNameGenerator.GenerateUniqueName();
     }
 }

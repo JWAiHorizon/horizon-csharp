@@ -158,6 +158,33 @@ a, .btn-link {
     font-size: 0.85rem;
 }
 
+.guest-preview {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.guest-preview strong {
+    color: #667eea;
+}
+
+.btn-link-small {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0 4px;
+    transition: transform 0.2s ease;
+}
+
+.btn-link-small:hover {
+    transform: rotate(180deg);
+}
+
+.btn-link-small:active {
+    transform: scale(0.9) rotate(180deg);
+}
+
 .btn-enter {
     width: 100%;
     padding: 14px 24px;
